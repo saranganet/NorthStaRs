@@ -32,15 +32,16 @@ exports.register = async (req, res) => {
       },
     });
 
+
     const token = jwt.sign(
       { id: newUser.id, username: newUser.username },
       process.env.JWT_SECRET
     );
     res.cookie('token', token, {
-        httpOnly: true,      
-        secure: process.env.NODE_ENV === 'production', 
-        sameSite: 'strict'
-      });
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
 
     res.status(201).json({
       message: 'User registered successfully',
@@ -90,11 +91,13 @@ exports.login = async (req, res) => {
       { id: user.id, username: user.username },
       process.env.JWT_SECRET
     );
+    // token ko cookie me send kar rahe hai header me change karna hai kyon ?? pata nahi cookie seekhna that issliye kiya bas
     res.cookie('token', token, {
-        httpOnly: true,                        
-        secure: process.env.NODE_ENV === 'production', 
-        sameSite: 'strict'
-      });
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+
+      sameSite: 'strict'
+    });
 
     res.status(200).json({
       message: 'Login successful',

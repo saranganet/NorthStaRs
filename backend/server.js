@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
-const cors = require('cors')
+const cors = require('cors');
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const app = express()
@@ -8,6 +9,7 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(cookieParser())
 
 // Root route
 app.get('/', (req, res) => {
@@ -68,6 +70,6 @@ app.use('/user',authentication)
 app.use('/quiz', quizRoutes)
 app.use('/badge', badgeRoutes)
 app.use('/profile', userProfileRoutes)
-app.listen('3000', () => {
-    console.log('server is live on 3000')
+app.listen('3005', () => {
+    console.log('server is live on 3005')
 })
