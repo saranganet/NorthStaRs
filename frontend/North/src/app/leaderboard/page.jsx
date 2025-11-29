@@ -1,70 +1,8 @@
 'use client';
 import { useEffect, useState } from "react";
 
+// --- Real API Integration ---
 import { getLeaderboard } from '@/app/utils/api';
-
-
-const AnalysisOverlay = ({ isOpen, onClose, analysis, loading, target }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
-      <div
-        className="bg-zinc-950 border border-lime-400 w-full max-w-lg p-1 shadow-[0_0_30px_rgba(132,204,22,0.15)]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="border border-zinc-800 p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
-
-          {/* Header */}
-          <div className="flex justify-between items-start">
-            <div>
-              <div className="text-lime-400 font-mono text-xs uppercase tracking-widest mb-1">
-                /// TACTICAL_ANALYSIS_PROTOCOL
-              </div>
-              <h3 className="text-white font-sans font-bold text-2xl uppercase">
-                TARGET: {target?.name}
-              </h3>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-zinc-500 hover:text-lime-400 font-mono text-xl leading-none"
-            >
-              [X]
-            </button>
-          </div>
-
-          {/* Content */}
-          <div className="min-h-[100px] flex items-center">
-            {loading ? (
-              <div className="font-mono text-lime-400 text-sm animate-pulse">
-                {'>'} ESTABLISHING NEURAL HANDSHAKE...<br />
-                {'>'} PARSING PERFORMANCE METRICS...<br />
-                {'>'} GENERATING INSIGHT...
-              </div>
-            ) : (
-              <p className="font-mono text-zinc-300 text-sm md:text-base leading-relaxed typing-effect">
-                <span className="text-lime-400 mr-2">{">"}</span>
-                {analysis}
-              </p>
-            )}
-          </div>
-
-          {/* Footer Decoration */}
-          <div className="border-t border-zinc-800 pt-4 flex justify-between items-end">
-            <div className="font-mono text-[10px] text-zinc-600">
-              AI_MODEL: GEMINI-2.5-FLASH<br />
-              CONFIDENCE: 99.8%
-            </div>
-            <div className="h-1 w-12 bg-lime-400 animate-pulse"></div>
-          </div>
-
-          {/* Background Grid decorative */}
-          <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(132,204,22,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(132,204,22,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // --- Swiss Grid Components ---
 
@@ -81,7 +19,6 @@ const ChampionSwiss = ({ data, onAnalyze }) => (
           <div className="w-4 h-4 bg-lime-400"></div>
           <span className="font-mono text-xs text-zinc-400 uppercase tracking-widest">Current Leader</span>
         </div>
-        {/* AI Button */}
         <button
           onClick={() => onAnalyze(data, 1)}
           className="bg-zinc-800 hover:bg-lime-400 hover:text-black text-zinc-400 px-3 py-1 font-mono text-xs border border-zinc-700 transition-all flex items-center gap-2"
@@ -115,7 +52,6 @@ const RunnerUpSwiss = ({ data, rank, onAnalyze }) => (
     <div className="flex justify-between items-start mb-2">
       <span className="font-mono text-xs text-zinc-500">RANK_0{rank}</span>
       <div className="flex items-center gap-2">
-        {/* AI Button - Visible on Hover */}
         <button
           onClick={() => onAnalyze(data, rank)}
           className="opacity-0 group-hover:opacity-100 bg-zinc-800 text-lime-400 hover:bg-lime-400 hover:text-black px-2 py-0.5 font-mono text-[10px] transition-all"
@@ -144,7 +80,6 @@ const ListRowSwiss = ({ data, rank, onAnalyze }) => (
       <span className="font-sans font-bold text-lg uppercase tracking-tight text-zinc-300 group-hover:text-black">
         {data?.name || "UNKNOWN"}
       </span>
-      {/* AI Button - Appears on Hover */}
       <button
         onClick={(e) => { e.stopPropagation(); onAnalyze(data, rank); }}
         className="opacity-0 group-hover:opacity-100 mr-4 text-black border border-black px-2 hover:bg-black hover:text-lime-400 font-mono text-xs font-bold uppercase"
@@ -161,12 +96,6 @@ const ListRowSwiss = ({ data, rank, onAnalyze }) => (
 export default function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // AI State
-  const [modalOpen, setModalOpen] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [analysisText, setAnalysisText] = useState("");
-  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -192,14 +121,20 @@ export default function Leaderboard() {
   }, []);
 
   const handleAnalyze = async (user, rank) => {
-    setSelectedUser(user);
-    setModalOpen(true);
-    setAnalyzing(true);
-    setAnalysisText("");
-
-    const result = await generateTacticalAnalysis(user, rank);
-    setAnalysisText(result);
-    setAnalyzing(false);
+    console.log('Analyzing user:', user, 'Rank:', rank);
+    // TODO: Make backend API call here
+    // Example:
+    // try {
+    //   const response = await fetch(`http://localhost:3005/analyze/${user.id}`, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ rank })
+    //   });
+    //   const analysis = await response.json();
+    //   console.log('Analysis result:', analysis);
+    // } catch (error) {
+    //   console.error('Analysis failed:', error);
+    // }
   };
 
   const topThree = leaderboard.slice(0, 3);
@@ -207,18 +142,8 @@ export default function Leaderboard() {
 
   return (
     <div className="bg-zinc-950 w-full min-h-screen text-zinc-100 font-sans selection:bg-lime-400 selection:text-black">
-
-      <AnalysisOverlay
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        analysis={analysisText}
-        loading={analyzing}
-        target={selectedUser}
-      />
-
       {/* SWISS GRID CONTAINER */}
       <div className="w-full max-w-7xl mx-auto border-x border-zinc-800">
-
         {/* HEADER */}
         <header className="border-b border-zinc-800 bg-zinc-950 p-8 md:p-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-20">
@@ -275,7 +200,7 @@ export default function Leaderboard() {
           <ListRowSwiss key={user.id || index} data={user} rank={index + 4} onAnalyze={handleAnalyze} />
         ))}
 
-        {/* AAPFOOTER */}
+        {/* FOOTER */}
         <div className="p-12 border-t border-zinc-800 bg-zinc-950 flex justify-between items-end">
           <div className="font-mono text-xs text-zinc-600">
             System v2.4<br />
@@ -285,7 +210,6 @@ export default function Leaderboard() {
             <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse"></div>
           </div>
         </div>
-
       </div>
     </div>
   );

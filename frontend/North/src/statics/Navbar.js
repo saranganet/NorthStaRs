@@ -16,7 +16,7 @@ function NavBar() {
                 <span className="font-mono text-sm tracking-widest text-zinc-100 uppercase">Nexus_Grid</span>
             </Link>
 
-            <div className="flex gap-6 md:gap-8 font-mono text-xs text-zinc-500 uppercase tracking-wider w-full md:w-auto overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+            <div className="flex gap-6 md:gap-8 font-mono text-xs text-zinc-500 uppercase tracking-wider w-full md:w-auto overflow-x-auto pb-2 md:pb-0 no-scrollbar items-center">
                 <Link href="/" className={`hover:text-lime-400 transition-colors whitespace-nowrap ${isActive('home') ? 'text-lime-400' : ''}`}>
                     Home
                 </Link>
@@ -24,6 +24,22 @@ function NavBar() {
                     Leaderboard
                 </Link>
                 <span className="text-zinc-700 cursor-not-allowed whitespace-nowrap">Profile [LOCKED]</span>
+
+                {/* Auth buttons */}
+                <div className="flex gap-3 ml-4">
+                    <Link
+                        href="/auth/login"
+                        className="px-4 py-2 border border-zinc-700 text-zinc-400 hover:border-lime-400 hover:text-lime-400 transition-colors whitespace-nowrap"
+                    >
+                        Login
+                    </Link>
+                    <Link
+                        href="/auth/signup"
+                        className="px-4 py-2 bg-lime-400 text-black hover:bg-white transition-colors whitespace-nowrap font-bold"
+                    >
+                        Sign_Up
+                    </Link>
+                </div>
             </div>
         </nav>
     )
