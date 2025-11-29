@@ -14,20 +14,48 @@ datasource db {
 }
 
 model User {
-  id             String       @id @default(uuid())
-  username       String       @unique
-  operativeName  String?      // Optional display name for leaderboard
-  email          String       @unique
+  id             String         @id @default(uuid())
+  username       String         @unique
+  operativeName  String?        // Optional display name for leaderboard
+  email          String         @unique
   password       String
-  xp             Int          @default(0)
-  level          Int          @default(1)
-  streakCount    Int          @default(0)
+  xp             Int            @default(0)
+  level          Int            @default(1)
+  streakCount    Int            @default(0)
   lastLogin      DateTime?
   badges         UserBadge[]
+  achievements   UserAchievement[]
   attempts       Attempt[]
   leaderboard    Leaderboard?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@map("users")
+}
+
+model Achievement {
+  id          String             @id @default(uuid())
+  name        String
+  description String
+  icon        String             // Icon name or URL
+  xpReward    Int                @default(100)
+  users       UserAchievement[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id             String      @id @default(uuid())
+  userId         String
+  achievementId  String
+  unlockedAt     DateTime    @default(now())
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement    Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@map("user_achievements")
 
   Reward Reward[]
 }
